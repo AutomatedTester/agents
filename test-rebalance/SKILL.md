@@ -23,6 +23,12 @@ Find out, briefly, before running anything (skip what the user already said):
   ideal; one run gives timing but no flakiness.
 - Any business context: critical journeys, recent incidents, features about to
   be rebuilt. This is the one input the code cannot provide.
+- Production observability, per critical journey: what would tell the team it
+  broke (error-rate alerts, synthetic checks, real-user monitoring), how fast
+  they'd know, and how changes ship and roll back (feature flags, canaries,
+  one-click rollback). Ask for an incident or error export if one exists
+  (date, the code path it traced to, severity). Without it, say the report has
+  no production evidence.
 
 If they have no CI data, proceed anyway and say the report has no flakiness or
 timing evidence.
@@ -89,18 +95,26 @@ shallow clone, a "last changed" date equal to the oldest commit in the clone mea
 
 ```bash
 python <skill_dir>/scripts/areas.py <repo> --evidence /tmp/rebalance-ev.json \
-    --depth 3 [--prefix packages/]
+    --depth 3 [--prefix packages/] [--incidents incidents.csv]
 ```
 
 Churn per source directory alongside the tests, by level, that cover it. Read
 it for the two shapes that matter most: a busy area with nothing above
 unit/component level (upgrade), and a quiet area covered by many browser tests
-(downgrade). Confirm per-area numbers with `git log` before quoting them, and
+(downgrade).
+
+`--incidents` adds production incident counts per area from a CSV with `date`,
+`path` (repo file or directory the incident traces to) and optional `severity`.
+The user usually has to map incidents to paths; do it with them rather than
+guessing. It adds two more shapes: an area with repeated production incidents
+and thin tests above unit level (upgrade), and a quiet area with many browser
+tests, no incidents and fast detection in production (downgrade). Confirm per-area numbers with `git log` before quoting them, and
 look at CI config to see which levels actually run on pull requests.
 
 ### 4. Judge
 
-Read `references/signals.md` and weigh each test against it. For every
+Read `references/signals.md` and weigh each test against it, including the
+production signals when the user gave you observability context. For every
 candidate, open the test and answer:
 - What question does this test answer?
 - Does answering it need this level's boundary (a real browser, real HTTP, a
