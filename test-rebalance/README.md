@@ -29,7 +29,7 @@ It also works anywhere that supports Agent Skills, as long as Python 3 and git a
 
 1. **Inventory** (`scripts/inventory.py`): finds test files and classifies them by the boundaries they cross: browser drivers (Selenium, WebdriverIO, Playwright, Cypress, Puppeteer, Nightwatch), HTTP clients, in-process app clients, real data layers, and mocks.
 2. **Evidence** (`scripts/evidence.py`): measures churn on each test and on the code it covers, counts fix commits, and reads JUnit XML for failure rate, flakiness and duration. Dependency bumps, formatting sweeps and bot commits are filtered out so they don't drown the signal.
-3. **Areas** (`scripts/areas.py`): for large repos, rolls churn up by directory alongside the tests at each level that cover it.
+3. **Areas** (`scripts/areas.py`): for large repos, rolls churn up by directory alongside the tests at each level that cover it, and production incidents too if you supply them.
 4. **Judgement**: Claude reads the candidate tests and weighs them against `references/signals.md`.
 5. **Report**: a short markdown report following `references/report-template.md`, with a "leave it alone" section and suggested "why this level" annotations.
 
@@ -44,6 +44,7 @@ Example reports:
 ## Getting the most from it
 
 - **Give it CI history.** Several runs of JUnit XML let it spot flakiness. One run only gives timings.
+- **Tell it about production.** What alerts, synthetic checks and rollbacks would catch a regression, and optionally a CSV of incidents (`date`, `path`, `severity`) for `areas.py --incidents`. Fast detection supports moving tests down; repeated incidents support moving them up.
 - **Tell it what's risky.** Critical journeys, recent incidents and planned rewrites are the inputs code can't provide.
 - **Record the reasons.** Paste the suggested annotations into your tests or PRs. Next time you run it, those reasons are what you check against.
 
@@ -51,6 +52,7 @@ Example reports:
 
 - Classification is heuristic. Projects with their own test helpers or base classes need a `--treat` mapping (the skill looks for these, and mappings apply to subclasses), and anything marked "inferred" is worth a review.
 - Languages: Python, JavaScript/TypeScript, Java/Kotlin, C#, Ruby, Go and PHP test naming conventions are recognised.
+- Production evidence is user-supplied. The scripts read an incident CSV but don't connect to any monitoring tool, and mapping incidents to code paths is up to you.
 - "Subject code" is found by file names and co-change, which is a guess.
 - Fix detection reads commit messages, so it can't tell a product bug from a test-setup fix, and it says little in repos that prefix most commits with `fix:`.
 

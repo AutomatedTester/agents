@@ -19,6 +19,9 @@ boundaries mocked or in-process) → **component** (UI in isolation) → **unit*
 | Journey is duplicated | Several e2e files repeat the same login/navigation before reaching the part they care about | Medium |
 | High cost per test | Mean file time much higher than siblings at the same level | Supporting only |
 
+| Production catches it fast | User confirms alerting, synthetic checks or error monitoring that would flag this failure within minutes, plus cheap rollback or flag-off | Strong, user-supplied |
+| No production incidents in the area | Incident export shows none in the window for the subject code, while it still has e2e coverage | Medium |
+
 A downgrade keeps the question the test asks. Say what the replacement test
 asserts and which boundary gets mocked or bypassed. Recommend keeping at least
 one thin e2e smoke path through any business-critical journey.
@@ -32,7 +35,23 @@ one thin e2e smoke path through any business-critical journey.
 | Business risk went up | User says so (new key customer, payments, compliance, a recent incident). Ask if unknown | Strong, user-supplied |
 | Browser behaviour matters again | Accessibility work, cross-browser bugs, new browser versions, rendering or focus fixes in history | Medium |
 | Stubs older than the API they stand in for | Fixtures, HAR recordings or `cy.intercept` bodies last changed long before recent commits to the matching serializer or endpoint; fields added or removed since. Check whether the fixture is missing a field the API now returns | Strong if the UI reads the drifted field, medium otherwise |
+| Production keeps finding it | Repeated incidents or error clusters traced to the subject code in the window, especially where tests passed | Strong |
+| Failure would go unseen | A critical journey with no alerting or synthetic check, so only a test would notice it breaks | Strong, user-supplied |
 | No coverage above a churning area | Subject code churns heavily but only unit or component tests touch it | Medium |
+
+## Production signals
+
+Observability is cover that sits outside the suite. Treat it as evidence, not as
+a replacement for tests:
+
+- Fast detection and cheap rollback lower the cost of a missed regression, which
+  supports moving a stable journey's tests down. Keep a thin smoke path anyway,
+  and never downgrade on detection speed alone.
+- Monitoring that only watches infrastructure (CPU, uptime) does not detect a
+  broken checkout. Ask what the alert fires on before counting it.
+- Incident-to-path mapping is a human judgement and often loose. Quote counts
+  with that caveat, and prefer "repeated incidents in an area" over single ones.
+- No incident data is not "no incidents". Say what you lacked.
 
 ## Scope, not level
 

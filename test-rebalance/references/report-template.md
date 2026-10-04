@@ -1,6 +1,6 @@
 # Test rebalance: <repo name>
 
-<as-of date> · window: <N> days · CI data: <N runs | none>
+<as-of date> · window: <N> days · CI data: <N runs | none> · Production data: <incident export, alerting notes | none>
 
 ## Summary
 
@@ -22,6 +22,7 @@
 - **Evidence:** <commits, fix commits, last real change, failure rate, seconds>
 - **Replacement:** <what the new test asserts, which boundary is mocked or bypassed>
 - **Keep:** <any thin smoke coverage that should stay at the current level>
+- **Production cover:** <what detects this failing in production and how fast, or "none known">
 
 ## Move up
 
@@ -30,6 +31,7 @@
 - **Question it answers:**
 - **Evidence:**
 - **Why the current level is no longer enough:**
+- **Production evidence:** <incidents in the area, or "none provided">
 
 ## Leave it alone
 
@@ -47,5 +49,5 @@
 
 ## Appendix: per-file evidence
 
-| File | Level | Test commits | Subject commits | Fix commits | Failure rate | Mean s |
-| --- | --- | --- | --- | --- | --- | --- |
+| File | Level | Test commits | Subject commits | Fix commits | Failure rate | Mean s | Incidents |
+| --- | --- | --- | --- | --- | --- | --- | --- |
