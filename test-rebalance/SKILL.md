@@ -26,9 +26,11 @@ Find out, briefly, before running anything (skip what the user already said):
 - Production observability, per critical journey: what would tell the team it
   broke (error-rate alerts, synthetic checks, real-user monitoring), how fast
   they'd know, and how changes ship and roll back (feature flags, canaries,
-  one-click rollback). Ask for an incident or error export if one exists
-  (date, the code path it traced to, severity). Without it, say the report has
-  no production evidence.
+  one-click rollback). Ask for an incident or error export if one exists, in
+  the format in `references/incidents-format.md` (if another agent is producing
+  it, point it at that file; it explains how to map incidents to code paths and
+  to leave a path blank rather than guess). Without it, say the report has no
+  production evidence.
 
 If they have no CI data, proceed anyway and say the report has no flakiness or
 timing evidence.
@@ -103,10 +105,12 @@ it for the two shapes that matter most: a busy area with nothing above
 unit/component level (upgrade), and a quiet area covered by many browser tests
 (downgrade).
 
-`--incidents` adds production incident counts per area from a CSV with `date`,
-`path` (repo file or directory the incident traces to) and optional `severity`.
-The user usually has to map incidents to paths; do it with them rather than
-guessing. It adds two more shapes: an area with repeated production incidents
+`--incidents` adds production incident counts per area from a CSV in the format
+in `references/incidents-format.md`: `date`, `path`, and optionally `severity`,
+`detected_by` and `minutes_to_detect`. Read the notes it prints under the table:
+unmapped incidents, bad dates and unrecognised severities are reported there, and
+none of them are zeros. If many are unmapped, say so in the report. Don't guess
+paths for them. It adds two more shapes: an area with repeated production incidents
 and thin tests above unit level (upgrade), and a quiet area with many browser
 tests, no incidents and fast detection in production (downgrade). Confirm per-area numbers with `git log` before quoting them, and
 look at CI config to see which levels actually run on pull requests.
