@@ -44,7 +44,7 @@ Example reports:
 ## Getting the most from it
 
 - **Give it CI history.** Several runs of JUnit XML let it spot flakiness. One run only gives timings.
-- **Tell it about production.** What alerts, synthetic checks and rollbacks would catch a regression, and optionally a CSV of incidents (`date`, `path`, `severity`) for `areas.py --incidents`. Fast detection supports moving tests down; repeated incidents support moving them up.
+- **Tell it about production.** What alerts, synthetic checks and rollbacks would catch a regression, and optionally a CSV of incidents for `areas.py --incidents` (format in `references/incidents-format.md`, which an observability agent can follow to produce it). Fast detection supports moving tests down; repeated incidents support moving them up.
 - **Tell it what's risky.** Critical journeys, recent incidents and planned rewrites are the inputs code can't provide.
 - **Record the reasons.** Paste the suggested annotations into your tests or PRs. Next time you run it, those reasons are what you check against.
 
